@@ -1,86 +1,86 @@
-select * from customer_details$ ;
+SELECT * FROM customer_details$ ;
 
 -- CALCULATING TOTAL CUSTOMERS
 
-select count(distinct [Customer ID]) as Total_customers
+SELECT COUNT(DISTINCT [Customer ID]) as Total_customers
 from customer_details$ ;
 
 
 -- AVERAGE AGE OF CUSTOMERS
 
-select Round(AVG(Age),0) as Average_age
-from customer_details$ ;
+SELECT Round(AVG(Age),0) as Average_age
+FROM customer_details$ ;
 
 --COUNTING TOTAL NUMBER OF MALE AND FEMALE CUSTOMERS
 
-Select Gender, count(Gender) as Total_Number
-from customer_details$
-group by Gender ;
+SELECT Gender, COUNT(Gender) as Total_Number
+FROM customer_details$
+GROUP BY Gender ;
 
 --CATEGORY OF PRODUCT PURCHASED THE MOST BY EACH GENDER
 
-Select Gender,Category,count(category) as Total_number
-from customer_details$
-Group by Gender,Category
-order by Gender,Total_number desc ;
+SELECT Gender,Category,COUNT(category) as Total_number
+FROM customer_details$
+GROUP BY Gender,Category
+ORDER BY Gender,Total_number DESC ;
 
 --CATEGORY OF PRODUCTS PURCHASED MOST PER SEASON
 
-select Season,count(category) Total
-from customer_details$
-group by Season
-order by Total desc ;
+SELECT Season,COUNT(category) Total
+FROM customer_details$
+GROUP BY Season
+ORDER BY Total DESC ;
 
 --TOP 10 MOST ITEMS PURCHASED
 
-select TOP 10 [Item Purchased],count([item Purchased]) Total
-from customer_details$
-Group by [Item Purchased]
-order by Total desc ;
+SELECT TOP 10 [Item Purchased],COUNT([item Purchased]) Total
+FROM customer_details$
+GROUP BY [Item Purchased]
+ORDER BY Total DESC ;
 
 --TOTAL NUMBER OF CUSTOMERS WHO HAD DISCOUNT OR NOT
 
-select [Discount Applied], COUNT(*) as Total ,(count (*) * 100/((select count(*) from customer_details$))) as Percentage_
-from customer_details$
-group by [Discount Applied] ;
+SELECT [Discount Applied], COUNT(*) as Total ,(count (*) * 100/((select count(*) from customer_details$))) as Percentage_
+FROM customer_details$
+GROUP BY [Discount Applied] ;
 
 --FINDING MOST USED SHIPPING TYPE
 
-Select [Shipping Type],count([Shipping Type]) Total ,count(*) * 100/(select count(*) from customer_details$) as Percentage_
+SELECT [Shipping Type],COUNT([Shipping Type]) Total ,COUNT(*) * 100/(SELECT COUNT(*) FROM customer_details$) as Percentage_
 from customer_details$
 --where [shipping Type] <> 'Free shipping'
-group by [Shipping Type]
-order by Total desc ;
+GROUP BY [Shipping Type]
+ORDER BY Total DESC ;
 
 --MOST USED PAYMENT METHODS
 
-Select [Payment Method],COUNT([Payment Method]) Total
-from customer_details$
-group by [Payment Method]
-order by Total Desc ;
+SELECT [Payment Method],COUNT([Payment Method]) Total
+FROM customer_details$
+GROUP BY [Payment Method]
+ORDER BY Total Desc ;
 
 --FREQUENCY OF PURCHASES
 
-Select [Frequency of Purchases],COUNT([Frequency of Purchases]) Total
-from customer_details$
-group by [Frequency of Purchases]
-order by Total desc ;
+SELECT [Frequency of Purchases],COUNT([Frequency of Purchases]) Total
+FROM customer_details$
+GROUP BY [Frequency of Purchases]
+ORDER BY Total DESC ;
 
 --UPDATING SIZE COLUMN TO FULL NAMES
 
-Select distinct size from customer_details$
+SELECT DISTINCT size from customer_details$
 
-Select size, Case
+SELECT size, CASE
                  when size = 'L' THEN 'Large'
 				 when size = 'S' THEN 'Small'
 				 when size = 'M' THEN 'Medium'
 				 when size = 'XL' THEN 'Xlarge'
 				 Else null
 				 End
-from customer_details$ ;
+FROM customer_details$ ;
 
-update customer_details$
-set Size =  Case
+UPDATE customer_details$
+SET Size =  CASE
                  when size = 'L' THEN 'Large'
 				 when size = 'S' THEN 'Small'
 				 when size = 'M' THEN 'Medium'
@@ -90,76 +90,76 @@ set Size =  Case
 
 --CHANGING INTERACTION TYPE INTO PROPER FORM
 
-Select *--,Upper(SUBSTRING([interaction type],1,1)) + Substring([interaction type],2,Len([interaction type]))
+SELECT *--,Upper(SUBSTRING([interaction type],1,1)) + Substring([interaction type],2,Len([interaction type]))
 FROM ['Sales Data$']
 
-Update ['Sales Data$']
-set [Interaction type] = Upper(SUBSTRING([interaction type],1,1)) + Substring([interaction type],2,Len([interaction type]))
+UPDATE ['Sales Data$']
+SET [Interaction type] = Upper(SUBSTRING([interaction type],1,1)) + Substring([interaction type],2,Len([interaction type]))
 
 
-select *
-from customer_details$ C
-join ['Sales Data$'] S
+SELECT *
+FROM customer_details$ C
+JOIN ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
 
 -- TOTAL AMOUNT SPENT BY CUSTOMERS ON
 
-select [Customer ID],Price, quantity,([Purchase Amount (USD)] * Quantity) as Total_Price
-from customer_details$ C
-join ['Sales Data$'] S
-on c.[Customer ID] = s.[user id]
+SELECT [Customer ID],Price, quantity,([Purchase Amount (USD)] * Quantity) as Total_Price
+FROM customer_details$ C
+JOIN ['Sales Data$'] S
+ON c.[Customer ID] = s.[user id]
 
 --CALCULATING TOTAL REVENUE
 
-select sum([Purchase Amount (USD)] * Quantity) as Revenue
-from customer_details$ C
-join ['Sales Data$'] S
+SELECT sum([Purchase Amount (USD)] * Quantity) as Revenue
+FROM customer_details$ C
+JOIN ['Sales Data$'] S
 on c.[Customer ID] = s.[user id] ;
 
 --REVENUE FOR PER MONTH
 
-select MONTH(Date) as Month_, sum([Purchase Amount (USD)] * Quantity) as Revenue
-from customer_details$ C
+SELECT MONTH(Date) as Month_, sum([Purchase Amount (USD)] * Quantity) as Revenue
+FROM customer_details$ C
 join ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
-Group by MONTH(Date)
-order by Revenue desc ;
+GROUP BY MONTH(Date)
+ORDER BY Revenue DESC ;
 
 --REVENUE PER QUARTER
 
-select Datepart(QUARTER,Date) Quarter__,sum([Purchase Amount (USD)] * Quantity) as Revenue
-from customer_details$ C
-join ['Sales Data$'] S
+SELECT Datepart(QUARTER,Date) Quarter__,sum([Purchase Amount (USD)] * Quantity) as Revenue
+FROM customer_details$ C
+JOIN ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
-Group by Datepart(QUARTER,Date)
-order by Revenue desc ;
+GROUP BY Datepart(QUARTER,Date)
+ORDER BY Revenue desc ;
 
 --REVENUE FOR LAST 5 MONTHS OF YEAR
 
-select sum([Purchase Amount (USD)] * Quantity) as Revenue
-from customer_details$ C
+SELECT sum([Purchase Amount (USD)] * Quantity) as Revenue
+FROM customer_details$ C
 join ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
-Where Date >= DATEADD(Month,-5,(Select Max(Date) from ['Sales Data$']) ;
+WHERE Date >= DATEADD(Month,-5,(Select Max(Date) from ['Sales Data$']) ;
 
 -- MOST INTERACTION WITH PRODUCT
 
-select [Interaction type],COUNT( [Interaction type]) Total
-from customer_details$ C
+SELECT [Interaction type],COUNT( [Interaction type]) Total
+FROM customer_details$ C
 join ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
-Where [Interaction type] is not null
-Group by [Interaction type]
-order by Total desc
+WHERE [Interaction type] is not null
+GROUP BY [Interaction type]
+ORDER BY Total DESC ;
 
 
-select Top 1 [Item Purchased],Location,COUNT([Item Purchased]) Total_Sold
-from customer_details$ C
+SELECT Top 1 [Item Purchased],Location,COUNT([Item Purchased]) Total_Sold
+FROM customer_details$ C
 join ['Sales Data$'] S
 on c.[Customer ID] = s.[user id]
-where season = 'Winter' and Location = 'New York'
-Group by [Item Purchased],Location
-order by Total_Sold desc
+WHERE season = 'Winter' and Location = 'New York'
+GROUP BY [Item Purchased],Location
+ORDER BY Total_Sold DESC ;
 
 
 
